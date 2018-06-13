@@ -1,9 +1,13 @@
 package jezorko.github.minimaltrianglepath.domain.input.dto;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
+
+import static lombok.AccessLevel.PACKAGE;
 
 /**
  * Representation of a triangle built from numbers.
@@ -19,7 +23,9 @@ import java.util.List;
  */
 
 @Getter
-@RequiredArgsConstructor
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = PACKAGE)
 public class Triangle {
 
     /**

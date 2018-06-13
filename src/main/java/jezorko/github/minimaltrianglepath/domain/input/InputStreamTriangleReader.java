@@ -6,6 +6,7 @@ import lombok.SneakyThrows;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Optional;
 
 final class InputStreamTriangleReader implements TriangleReader, AutoCloseable {
 
@@ -19,14 +20,12 @@ final class InputStreamTriangleReader implements TriangleReader, AutoCloseable {
 
     @Override
     @SneakyThrows
-    public Triangle nextTriangle() {
+    public Optional<Triangle> get() {
         currentLine = reader.readLine();
-        return null; // TODO: finish implementation
-    }
-
-    @Override
-    public boolean hasNext() {
-        return inputAvailable;
+        if (currentLine == null) {
+            inputAvailable = false;
+        }
+        return Optional.empty(); // TODO: finish implementation
     }
 
     @Override

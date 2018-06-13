@@ -11,16 +11,28 @@ import static org.apache.commons.io.IOUtils.toInputStream
 
 class InputStreamTriangleReaderSpecTest extends Specification {
 
+    def "should return an empty optional if input does not contain any more triangles"() {
+        setup:
+          def reader = new InputStreamTriangleReader(inputAsStream(""))
+
+        when:
+          def result = reader.get()
+
+        then:
+          !result.isPresent()
+    }
+
     @Unroll
     "should read '#formattedInput' as #expectedResult"() {
         setup:
           def reader = new InputStreamTriangleReader(inputAsStream(input))
 
         when:
-          def actualResult = reader.nextTriangle()
+          def actualResult = reader.get()
 
         then:
-          actualResult == expectedResult
+          actualResult.isPresent()
+          actualResult.get() == expectedResult
 
         where:
           input           || expectedResult
@@ -36,7 +48,7 @@ class InputStreamTriangleReaderSpecTest extends Specification {
           def reader = new InputStreamTriangleReader(inputAsStream(input))
 
         when:
-          reader.nextTriangle()
+          reader.get()
 
         then:
           thrown expectedException

@@ -1,0 +1,1 @@
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Build Status](https://staging.travis-ci.org/Jezorko/suprnation-minimal-triangle-path.svg?branch=master)](https://staging.travis-ci.org/Jezorko/suprnation-minimal-triangle-path)

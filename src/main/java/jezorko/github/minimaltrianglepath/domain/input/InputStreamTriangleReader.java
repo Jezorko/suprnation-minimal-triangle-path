@@ -1,6 +1,5 @@
 package jezorko.github.minimaltrianglepath.domain.input;
 
-import jezorko.github.minimaltrianglepath.domain.input.dto.Triangle;
 import lombok.SneakyThrows;
 
 import java.io.BufferedReader;
@@ -11,10 +10,12 @@ import java.util.Optional;
 final class InputStreamTriangleReader implements TriangleReader, AutoCloseable {
 
     private final BufferedReader reader;
+    private int expectedNextRowValuesAmount = 1;
     private boolean inputAvailable = true;
     private String currentLine = null;
 
     InputStreamTriangleReader(InputStream inputStream) {
+
         reader = new BufferedReader(new InputStreamReader(inputStream));
     }
 

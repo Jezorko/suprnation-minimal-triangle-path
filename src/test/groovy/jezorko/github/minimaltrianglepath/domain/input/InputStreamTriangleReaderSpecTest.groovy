@@ -1,13 +1,10 @@
 package jezorko.github.minimaltrianglepath.domain.input
 
-import jezorko.github.minimaltrianglepath.domain.input.dto.Triangle
-import jezorko.github.minimaltrianglepath.domain.input.dto.TriangleRow
 import jezorko.github.minimaltrianglepath.domain.input.exception.NotATriangleException
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import static java.nio.charset.StandardCharsets.UTF_8
-import static org.apache.commons.io.IOUtils.toInputStream
+import static jezorko.github.minimaltrianglepath.domain.input.TestUtils.*
 
 class InputStreamTriangleReaderSpecTest extends Specification {
 
@@ -36,9 +33,9 @@ class InputStreamTriangleReaderSpecTest extends Specification {
 
         where:
           input           || expectedResult
-          "1"             || triangle([row([1L])])
-          "1\n2 3"        || triangle([row([1L]), row([2L, 3L])])
-          "1\n2 3\n4 5 6" || triangle([row([1L]), row([2L, 3L]), row([4L, 5L, 6L])])
+          "1"             || triangle(node(1L))
+          "1\n2 3"        || triangle(node(1L, node(2L), node(3L)))
+          "1\n2 3\n4 5 6" || triangle(node(1L, node(2L, node(4L), node(5L)), node(3L, node(5L), node(6L))))
           formattedInput = formatTriangleInput input
     }
 
@@ -59,22 +56,6 @@ class InputStreamTriangleReaderSpecTest extends Specification {
           "1\n2 NaN"  || NumberFormatException
           "1\n2\n3 4" || NotATriangleException
           formattedInput = formatTriangleInput input
-    }
-
-    static formatTriangleInput(String input) {
-        input.replaceAll("\n", "\\\\n")
-    }
-
-    static inputAsStream(String input) {
-        toInputStream(input, UTF_8)
-    }
-
-    def triangle(List<TriangleRow> values) {
-        new Triangle(values)
-    }
-
-    def row(List<Long> values) {
-        new TriangleRow(values)
     }
 
 }

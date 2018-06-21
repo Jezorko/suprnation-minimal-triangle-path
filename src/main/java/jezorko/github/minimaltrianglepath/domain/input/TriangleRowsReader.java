@@ -53,7 +53,7 @@ class TriangleRowsReader implements Iterable<TriangleNode[]>, AutoCloseable {
                     if (nextCharacter == -1) {
                         throw new TooFewTriangleNodesException(expectedNumbersAmount, 0);
                     }
-                    throw new InvalidTriangleNodeValueException(nextCharacter);
+                    throw new InvalidTriangleNodeValueException(nextCharacter, expectedNumbersAmount - 1, i);
                 }
 
                 nextValue = (nextValue * 10) + (nextCharacter - '0');

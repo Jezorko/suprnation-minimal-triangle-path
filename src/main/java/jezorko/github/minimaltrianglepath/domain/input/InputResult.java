@@ -14,6 +14,36 @@ import java.util.function.Consumer;
 public interface InputResult<Result> {
 
     /**
+     * Raw instance of non-reactive {@link InputResult}.
+     *
+     * @see #empty()
+     */
+    InputResult EMPTY = new InputResult() {
+        @Override
+        public InputResult doOnSuccess(Consumer consumer) {
+            return this;
+        }
+
+        @Override
+        public InputResult doOnError(Consumer consumer) {
+            return this;
+        }
+    };
+
+    /**
+     * An empty result, which reacts neither to
+     * {@link #doOnSuccess(Consumer)} nor {@link #doOnError(Consumer)}.
+     *
+     * @param <Result> result type, can be anything
+     *
+     * @return {@link #EMPTY} with a generic type
+     */
+    @SuppressWarnings("unchecked")
+    static <Result> InputResult<Result> empty() {
+        return EMPTY;
+    }
+
+    /**
      * Wraps result creation in a try-catch block.
      * If the supplier throws, an {@link #error(Throwable)} result is returned.
      * Otherwise, a {@link #success(Object)} result is returned.

@@ -12,7 +12,7 @@ import static jezorko.github.minimaltrianglepath.domain.input.InputResult.tryOf;
 import static lombok.AccessLevel.PACKAGE;
 
 @RequiredArgsConstructor(access = PACKAGE)
-final class InputStreamTriangleReader implements TriangleReader, AutoCloseable {
+public final class InputStreamTriangleReader implements TriangleReader, AutoCloseable {
 
     private final TriangleRowsReader rows;
 

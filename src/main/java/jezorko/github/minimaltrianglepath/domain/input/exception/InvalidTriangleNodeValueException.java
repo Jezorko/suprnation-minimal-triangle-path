@@ -7,9 +7,10 @@ public class InvalidTriangleNodeValueException extends RuntimeException {
 
     private final int receivedInvalidValue;
 
-    public InvalidTriangleNodeValueException(int receivedValue) {
+    public InvalidTriangleNodeValueException(int receivedValue, int rowId, int valueId) {
         super("triangle node cannot be built from given input, only digits are allowed" +
-              " but received " + receivedValue + formatAsCharIfAsciiCharacterOrDigit(receivedValue));
+              " but received " + receivedValue + formatAsCharIfAsciiCharacterOrDigit(receivedValue) +
+              " (row " + rowId + ", value " + valueId + ")");
         this.receivedInvalidValue = receivedValue;
     }
 

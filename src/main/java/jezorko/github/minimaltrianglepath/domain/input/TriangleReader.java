@@ -1,9 +1,9 @@
 package jezorko.github.minimaltrianglepath.domain.input;
 
-import jezorko.github.minimaltrianglepath.domain.shared.Emitter;
+import java.util.function.Supplier;
 
 /**
- * Defines a {@link Triangle} emitting class.
+ * Defines a {@link Triangle} reading class.
  */
-interface TriangleReader extends Emitter<Triangle> {
+interface TriangleReader extends Supplier<InputResult<Triangle>> {
 }

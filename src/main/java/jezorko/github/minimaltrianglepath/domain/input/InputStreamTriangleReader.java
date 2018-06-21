@@ -1,36 +1,56 @@
 package jezorko.github.minimaltrianglepath.domain.input;
 
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Optional;
+import java.util.Iterator;
 
+import static jezorko.github.minimaltrianglepath.domain.input.InputResult.tryOf;
+import static lombok.AccessLevel.PACKAGE;
+
+@RequiredArgsConstructor(access = PACKAGE)
 final class InputStreamTriangleReader implements TriangleReader, AutoCloseable {
 
-    private final BufferedReader reader;
-    private int expectedNextRowValuesAmount = 1;
-    private boolean inputAvailable = true;
-    private String currentLine = null;
+    private final TriangleRowsReader rows;
 
-    InputStreamTriangleReader(InputStream inputStream) {
-
-        reader = new BufferedReader(new InputStreamReader(inputStream));
+    public InputStreamTriangleReader(InputStream inputStream) {
+        this(new TriangleRowsReader(new BufferedReader(new InputStreamReader(inputStream))));
     }
 
     @Override
     @SneakyThrows
-    public Optional<Triangle> get() {
-        currentLine = reader.readLine();
-        if (currentLine == null) {
-            inputAvailable = false;
-        }
-        return Optional.empty(); // TODO: finish implementation
+    public InputResult<Triangle> get() {
+        return tryOf(() -> {
+            Iterator<TriangleNode[]> rowsIterator = rows.iterator();
+
+            TriangleNode[] previousRow = rowsIterator.next();
+            final TriangleNode top = previousRow[0];
+
+            while (rowsIterator.hasNext()) {
+                final TriangleNode[] currentRow = rowsIterator.next();
+
+                previousRow[0].setLeft(currentRow[0]);
+
+                for (int nodeId = 1; nodeId < currentRow.length - 1; ++nodeId) {
+                    previousRow[nodeId - 1].setRight(currentRow[nodeId]);
+                    previousRow[nodeId].setLeft(currentRow[nodeId]);
+                }
+
+                previousRow[previousRow.length - 1].setRight(currentRow[currentRow.length - 1]);
+
+                previousRow = currentRow;
+            }
+
+            return new Triangle(top);
+        });
     }
 
     @Override
     public void close() throws Exception {
-        reader.close();
+        rows.close();
     }
+
 }

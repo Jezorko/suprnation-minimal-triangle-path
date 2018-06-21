@@ -1,6 +1,9 @@
 package jezorko.github.minimaltrianglepath.domain.input;
 
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import static lombok.AccessLevel.PACKAGE;
 
@@ -11,12 +14,14 @@ import static lombok.AccessLevel.PACKAGE;
  * If both children are absent, this node is a leaf.
  */
 @Getter
-@ToString
 @Setter(PACKAGE)
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = PACKAGE)
 public class TriangleNode {
 
+    /**
+     * The value of this node.
+     */
     private final long value;
 
     /**
@@ -33,4 +38,13 @@ public class TriangleNode {
         return left == null && right == null;
     }
 
+    @Override
+    public String toString() {
+        if (isLeaf()) {
+            return String.valueOf(value);
+        }
+        else {
+            return "(" + left + " < " + value + " > " + right + ")";
+        }
+    }
 }

@@ -1,61 +1,65 @@
 package jezorko.github.minimaltrianglepath.domain.input
 
-import jezorko.github.minimaltrianglepath.domain.input.exception.NotATriangleException
 import spock.lang.Specification
+import spock.lang.Subject
 import spock.lang.Unroll
 
-import static jezorko.github.minimaltrianglepath.domain.input.TestUtils.*
+import static jezorko.github.minimaltrianglepath.domain.input.TestUtils.node
+import static jezorko.github.minimaltrianglepath.domain.input.TestUtils.triangle
 
 class InputStreamTriangleReaderSpecTest extends Specification {
 
-    def "should return an empty optional if input does not contain any more triangles"() {
-        setup:
-          def reader = new InputStreamTriangleReader(inputAsStream(""))
+    def rows = Mock TriangleRowsReader
 
-        when:
-          def result = reader.get()
-
-        then:
-          !result.isPresent()
-    }
+    @Subject
+    def reader = new InputStreamTriangleReader(rows)
 
     @Unroll
-    "should read '#formattedInput' as #expectedResult"() {
-        setup:
-          def reader = new InputStreamTriangleReader(inputAsStream(input))
-
-        when:
+    "should transform #givenRows to #expectedResult"() {
+        when: "a triangle is read"
           def actualResult = reader.get()
 
-        then:
-          actualResult.isPresent()
-          actualResult.get() == expectedResult
+        then: "the rows are read one by one using iterator"
+          1 * rows.iterator() >> givenRows.iterator()
+
+        and: "a triangle is built from given nodes"
+          actualResult.doOnSuccess({ assert it == expectedResult })
+                      .doOnError({ throw it })
 
         where:
-          input           || expectedResult
-          "1"             || triangle(node(1L))
-          "1\n2 3"        || triangle(node(1L, node(2L), node(3L)))
-          "1\n2 3\n4 5 6" || triangle(node(1L, node(2L, node(4L), node(5L)), node(3L, node(5L), node(6L))))
-          formattedInput = formatTriangleInput input
+          givenRows                                                          || expectedResult
+          rows([[node(1)]])                                                  || triangle(node(1))
+          rows([[node(1)], [node(2), node(3)]])                              || triangle(node(1, node(2), node(3)))
+          rows([[node(1)], [node(2), node(3)], [node(4), node(5), node(6)]]) || triangle(node(1, node(2, node(4), node(5)), node(3, node(5), node(6))))
     }
 
-    @Unroll
-    "should throw #expectedException.simpleName for given input '#formattedInput'"() {
-        setup:
-          def reader = new InputStreamTriangleReader(inputAsStream(input))
+    def "should reuse references to nodes"() {
+        given: "nodes that should share other nodes"
+          def top = node(1)
+          def secondRow = [node(2), node(3)]
+          def sharedNode = node(5)
+          def thirdRow = [node(4), sharedNode, node(6)]
+          def givenRows = rows([[top], secondRow, thirdRow])
 
-        when:
-          reader.get()
+        when: "a triangle is read"
+          def actualResult
+          reader.get().doOnSuccess({ actualResult = it })
 
-        then:
-          thrown expectedException
+        then: "the rows are read one by one using iterator"
+          1 * rows.iterator() >> givenRows.iterator()
 
-        where:
-          input       || expectedException
-          "NaN"       || NumberFormatException
-          "1\n2 NaN"  || NumberFormatException
-          "1\n2\n3 4" || NotATriangleException
-          formattedInput = formatTriangleInput input
+        and: "top node was not recreated"
+          actualResult != null
+          actualResult.top == top
+
+        and: "shared node was reused"
+          actualResult.top.left.right.is sharedNode
+          actualResult.top.right.left.is sharedNode
+          actualResult.top.left.right.is actualResult.top.right.left
+    }
+
+    static rows(givenRows) {
+        givenRows.collect { it as TriangleNode[] }
     }
 
 }

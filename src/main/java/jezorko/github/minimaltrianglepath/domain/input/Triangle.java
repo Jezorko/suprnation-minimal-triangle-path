@@ -3,7 +3,6 @@ package jezorko.github.minimaltrianglepath.domain.input;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 
 import static lombok.AccessLevel.PACKAGE;
@@ -24,7 +23,6 @@ import static lombok.AccessLevel.PACKAGE;
  * It is guaranteed that the top node will never be null.
  */
 
-@ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = PACKAGE)
 public class Triangle {
@@ -38,5 +36,10 @@ public class Triangle {
     @NotNull
     public TriangleNode getTop() {
         return top;
+    }
+
+    @Override
+    public String toString() {
+        return "Δ(" + top + ")";
     }
 }

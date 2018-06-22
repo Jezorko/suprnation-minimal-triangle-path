@@ -2,6 +2,10 @@
 
 ## Minimal triangle path calculating application
 
+### Task specification
+
+[Description PDF](exercise%20description.pdf)
+
 ### Requirements
 
  * Java 10

@@ -70,22 +70,23 @@ class CumulativeMinimalTrianglePathCalculator implements MinimalTrianglePathCalc
 
     @NotNull
     private CalculationFrame calculateFrom(CalculationFrame oldFrame) {
-        if (isCalculationFinished(oldFrame)) {
-            return oldFrame;
-        }
+        CalculationFrame newFrame;
 
-        final var newFrame = oldFrame.copy();
+        do {
+            newFrame = oldFrame.copy();
 
-        updateFirstElement(newFrame);
+            updateFirstElement(newFrame);
 
-        for (int i = 1; i < oldFrame.size(); ++i) {
-            UpdateMiddleFramePart(oldFrame, newFrame, i);
-        }
+            for (int i = 1; i < oldFrame.size(); ++i) {
+                UpdateMiddleFramePart(oldFrame, newFrame, i);
+            }
 
-        appendNewLastElement(oldFrame, newFrame);
+            appendNewLastElement(oldFrame, newFrame);
 
-        // TODO: replace recursion with an iterative approach
-        return calculateFrom(newFrame);
+            oldFrame = newFrame;
+        } while (!isCalculationFinished(newFrame));
+
+        return newFrame;
     }
 
     private boolean isCalculationFinished(CalculationFrame oldFrame) {

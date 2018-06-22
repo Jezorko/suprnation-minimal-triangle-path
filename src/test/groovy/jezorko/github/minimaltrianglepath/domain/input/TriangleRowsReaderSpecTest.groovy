@@ -5,7 +5,7 @@ import jezorko.github.minimaltrianglepath.domain.input.exception.TooFewTriangleN
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import static jezorko.github.minimaltrianglepath.domain.input.TestUtils.*
+import static jezorko.github.minimaltrianglepath.TestUtils.*
 
 class TriangleRowsReaderSpecTest extends Specification {
 

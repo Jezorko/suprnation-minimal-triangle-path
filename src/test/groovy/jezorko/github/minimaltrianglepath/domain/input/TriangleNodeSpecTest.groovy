@@ -3,7 +3,7 @@ package jezorko.github.minimaltrianglepath.domain.input
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import static jezorko.github.minimaltrianglepath.domain.input.TestUtils.node
+import static jezorko.github.minimaltrianglepath.TestUtils.node
 
 class TriangleNodeSpecTest extends Specification {
 

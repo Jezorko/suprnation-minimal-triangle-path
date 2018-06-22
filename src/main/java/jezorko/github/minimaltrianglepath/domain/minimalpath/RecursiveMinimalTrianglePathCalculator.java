@@ -15,7 +15,7 @@ public class RecursiveMinimalTrianglePathCalculator implements MinimalTrianglePa
     public TrianglePath calculateFrom(Triangle triangle) {
         final TriangleNode top = triangle.getTop();
 
-        final PartialResult result = recuuuursion(top, ZERO);
+        final PartialResult result = calculateFrom(top, ZERO);
         Stack<TriangleNode> path = result.partialPath;
         path.push(top);
 
@@ -27,15 +27,15 @@ public class RecursiveMinimalTrianglePathCalculator implements MinimalTrianglePa
         return new TrianglePath(nodesInPath, result.value);
     }
 
-    private PartialResult recuuuursion(TriangleNode currentNode, BigInteger currentValue) {
+    private PartialResult calculateFrom(TriangleNode currentNode, BigInteger currentValue) {
         currentValue = currentValue.add(BigInteger.valueOf(currentNode.getValue()));
 
         if (currentNode.isLeaf()) {
             return new PartialResult(currentValue, new Stack<>());
         }
 
-        PartialResult leftValue = recuuuursion(currentNode.getLeft(), currentValue);
-        PartialResult rightValue = recuuuursion(currentNode.getRight(), currentValue);
+        PartialResult leftValue = calculateFrom(currentNode.getLeft(), currentValue);
+        PartialResult rightValue = calculateFrom(currentNode.getRight(), currentValue);
 
         if (leftValue.value.compareTo(rightValue.value) < 0) {
             leftValue.partialPath.push(currentNode.getLeft());

@@ -4,6 +4,7 @@ import jezorko.github.minimaltrianglepath.domain.cli.CommandLineArguments;
 import jezorko.github.minimaltrianglepath.domain.input.InputResult;
 import jezorko.github.minimaltrianglepath.domain.input.TriangleInputReaderStaticFactory;
 import jezorko.github.minimaltrianglepath.domain.input.TriangleReader;
+import jezorko.github.minimaltrianglepath.domain.output.StandardOutputTrianglePathPrinter;
 
 import static java.lang.System.err;
 import static java.util.Optional.of;
@@ -19,10 +20,8 @@ public final class MinimalTrianglePathApplication {
                                       .map(TriangleReader::get)
                                       .orElseGet(InputResult::empty)
                                       .doOnSuccess(triangle -> of(triangle).map(defaultCalculator()::calculateFrom)
-                                                                           // TODO: add path printing classes
-                                                                           .map(path -> "Minimal path is: " + path)
-                                                                           .ifPresent(System.out::println))
-                                      .doOnError(err::print);
+                                                                           .ifPresent(StandardOutputTrianglePathPrinter::print))
+                                      .doOnError(err::println);
     }
 
 }

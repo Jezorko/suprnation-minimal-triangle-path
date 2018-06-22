@@ -44,9 +44,8 @@ class TestUtils {
         return result
     }
 
-    static randomNode() {
-        long value = Long.valueOf(randomNumeric(3))
-        new TriangleNode(value)
+    static path(nodes, int value) {
+        new TrianglePath(nodes as TriangleNode[], BigInteger.valueOf(value as long))
     }
 
     static formatTriangleInput(String input) {

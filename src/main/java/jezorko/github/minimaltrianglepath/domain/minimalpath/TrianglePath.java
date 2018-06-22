@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.math.BigInteger;
 
-import static java.util.Arrays.stream;
 import static lombok.AccessLevel.PACKAGE;
 
 /**
@@ -29,16 +28,5 @@ public class TrianglePath {
      * Sum of all the nodes in this path.
      */
     private final BigInteger value;
-
-    /**
-     * @return path representation as sum of nodes equation
-     */
-    @Override
-    public String toString() {
-        return stream(nodes).map(TriangleNode::getValue)
-                            .map(String::valueOf)
-                            .reduce((v1, v2) -> v1 + " + " + v2)
-                            .orElse("?") + " = " + value;
-    }
 
 }

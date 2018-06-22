@@ -28,7 +28,7 @@ public class TriangleInputReaderStaticFactory {
         return streamReader(new FileInputStream(file));
     }
 
-    public static TriangleReader streamReader(InputStream stream) {
+    private static TriangleReader streamReader(InputStream stream) {
         return new InputStreamTriangleReader(stream);
     }
 

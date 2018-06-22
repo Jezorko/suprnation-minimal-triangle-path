@@ -3,6 +3,7 @@ package jezorko.github.minimaltrianglepath.domain.minimalpath;
 import jezorko.github.minimaltrianglepath.domain.input.Triangle;
 import jezorko.github.minimaltrianglepath.domain.input.TriangleNode;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
 import java.util.Stack;
@@ -11,6 +12,7 @@ import static java.math.BigInteger.ZERO;
 
 public class RecursiveMinimalTrianglePathCalculator implements MinimalTrianglePathCalculator {
 
+    @NotNull
     @Override
     public TrianglePath calculateFrom(Triangle triangle) {
         final TriangleNode top = triangle.getTop();
@@ -27,6 +29,7 @@ public class RecursiveMinimalTrianglePathCalculator implements MinimalTrianglePa
         return new TrianglePath(nodesInPath, result.value);
     }
 
+    @NotNull
     private PartialResult calculateFrom(TriangleNode currentNode, BigInteger currentValue) {
         currentValue = currentValue.add(BigInteger.valueOf(currentNode.getValue()));
 

@@ -4,8 +4,8 @@ import spock.lang.Specification
 import spock.lang.Subject
 import spock.lang.Unroll
 
-import static jezorko.github.minimaltrianglepath.domain.input.TestUtils.node
-import static jezorko.github.minimaltrianglepath.domain.input.TestUtils.triangle
+import static jezorko.github.minimaltrianglepath.TestUtils.node
+import static jezorko.github.minimaltrianglepath.TestUtils.triangle
 
 class InputStreamTriangleReaderSpecTest extends Specification {
 

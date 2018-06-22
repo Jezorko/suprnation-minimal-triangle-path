@@ -1,4 +1,7 @@
-package jezorko.github.minimaltrianglepath.domain.input
+package jezorko.github.minimaltrianglepath
+
+import jezorko.github.minimaltrianglepath.domain.input.Triangle
+import jezorko.github.minimaltrianglepath.domain.input.TriangleNode
 
 import static java.nio.charset.StandardCharsets.UTF_8
 import static org.apache.commons.io.IOUtils.toInputStream

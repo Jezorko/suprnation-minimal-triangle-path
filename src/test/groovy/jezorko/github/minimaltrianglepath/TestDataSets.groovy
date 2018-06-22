@@ -33,7 +33,38 @@ class TestDataSets {
                               )
                          )
                     )
-            ), new TrianglePath([node(7), node(6), node(3), node(2)] as TriangleNode[], 18g))
+            ), new TrianglePath([node(7), node(6), node(3), node(2)] as TriangleNode[], 18g)),
+
+            Pair.of(triangle(
+                    node(22,
+                         node(12,
+                              node(78,
+                                   node(11),
+                                   node(25)
+                              ),
+                              node(53,
+                                   node(25),
+                                   node(10)
+                              )
+                         ),
+                         node(3,
+                              node(53,
+                                   node(25),
+                                   node(10)
+                              ),
+                              node(34,
+                                   node(10),
+                                   node(82)
+                              )
+                         )
+                    )
+            ), new TrianglePath([node(22), node(3), node(34), node(10)] as TriangleNode[], 69g)),
+
+            Pair.of(triangle(
+                    node(1,
+                         node(2),
+                         node(2))
+            ), new TrianglePath([node(1), node(2)] as TriangleNode[], 3g))
     ]
 
 }

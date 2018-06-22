@@ -11,8 +11,44 @@ import java.util.Stack;
 
 import static java.math.BigInteger.ZERO;
 import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 
-public class CumulativeMinimalTrianglePathCalculator implements MinimalTrianglePathCalculator {
+/**
+ * Calculates minimal {@link Triangle} path by
+ * accumulating the calculations for every row.
+ * Consider the following {@link Triangle}:
+ * <pre>
+ *       22
+ *     12   3
+ *   78  53  34
+ * 11  25  10  82
+ * </pre>
+ * in the first step, the initial calculation
+ * frame is created from the top node [22].
+ * Then, frame moves downwards and nodes below
+ * are added to the lowest node from above them.
+ * The second step would then look like:
+ * <pre>
+ *    [24  25]
+ *   78  53  34
+ * 11  25  10  82
+ * </pre>
+ * Of course, there is not much choice because
+ * there is only one top node, but in the next
+ * step the algorithm finally gets to choose:
+ * <pre>
+ *  [102    77   59]
+ * 11    25   10   82
+ * </pre>
+ * And finally, the last step yields the result
+ * as we are left with leaves:
+ * <pre>
+ * [113 102  69 141]
+ * </pre>
+ * All that's left is to iterate over all the
+ * sums and choose the lowest one.
+ */
+class CumulativeMinimalTrianglePathCalculator implements MinimalTrianglePathCalculator {
 
     @NotNull
     @Override
@@ -48,6 +84,7 @@ public class CumulativeMinimalTrianglePathCalculator implements MinimalTriangleP
 
         appendNewLastElement(oldFrame, newFrame);
 
+        // TODO: replace recursion with an iterative approach
         return calculateFrom(newFrame);
     }
 
@@ -103,8 +140,8 @@ public class CumulativeMinimalTrianglePathCalculator implements MinimalTriangleP
     private static class CalculationFrame extends ArrayList<CalculationPart> {
         private CalculationFrame copy() {
             var result = new CalculationFrame();
-            stream().map(CalculationPart::copy)
-                    .forEach(result::add); // TODO: maybe collect instead of adding one-by-one?
+            result.addAll(stream().map(CalculationPart::copy)
+                                  .collect(toList()));
             return result;
         }
     }

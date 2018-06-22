@@ -11,12 +11,15 @@ import java.util.Iterator;
 import static jezorko.github.minimaltrianglepath.domain.input.InputResult.tryOf;
 import static lombok.AccessLevel.PACKAGE;
 
+/**
+ * Builds a {@link Triangle} from given {@link InputStream}.
+ */
 @RequiredArgsConstructor(access = PACKAGE)
-public final class InputStreamTriangleReader implements TriangleReader, AutoCloseable {
+final class InputStreamTriangleReader implements TriangleReader, AutoCloseable {
 
     private final TriangleRowsReader rows;
 
-    public InputStreamTriangleReader(InputStream inputStream) {
+    InputStreamTriangleReader(InputStream inputStream) {
         this(new TriangleRowsReader(new BufferedReader(new InputStreamReader(inputStream))));
     }
 

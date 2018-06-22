@@ -1,6 +1,6 @@
 package jezorko.github.minimaltrianglepath.domain.input;
 
-import jezorko.github.minimaltrianglepath.domain.shared.CheckedSupplier;
+import jezorko.github.minimaltrianglepath.domain.shared.ThrowingSupplier;
 
 import java.util.function.Consumer;
 
@@ -53,7 +53,7 @@ public interface InputResult<Result> {
      *
      * @return a new {@link InputResult} instance
      */
-    static <Result> InputResult<Result> tryOf(CheckedSupplier<Result> resultSupplier) {
+    static <Result> InputResult<Result> tryOf(ThrowingSupplier<Result, Throwable> resultSupplier) {
         try {
             return success(resultSupplier.get());
         } catch (Throwable exception) {

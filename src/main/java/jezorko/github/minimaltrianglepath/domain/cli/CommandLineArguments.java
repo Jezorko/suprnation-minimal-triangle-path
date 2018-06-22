@@ -10,6 +10,10 @@ import java.util.Optional;
 
 import static com.martiansoftware.jsap.JSAP.STRING_PARSER;
 
+/**
+ * Allows reading application parameters from
+ * command line interface arguments.
+ */
 public class CommandLineArguments {
 
     private static final String INPUT_FILE_OPTION_NAME = "input-file";
@@ -24,6 +28,9 @@ public class CommandLineArguments {
         parsingResult = jsap.parse(args);
     }
 
+    /**
+     * @return input file specified by the user
+     */
     public Optional<File> getInputFile() {
         return Optional.of(INPUT_FILE_OPTION_NAME)
                        .map(parsingResult::getString)

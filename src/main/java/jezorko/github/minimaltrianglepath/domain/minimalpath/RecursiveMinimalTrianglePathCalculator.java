@@ -10,7 +10,17 @@ import java.util.Stack;
 
 import static java.math.BigInteger.ZERO;
 
-public class RecursiveMinimalTrianglePathCalculator implements MinimalTrianglePathCalculator {
+/**
+ * Calculates minimal path recursively.
+ * Iterates over every possible path in
+ * the given {@link Triangle} and compares
+ * the results.
+ * This solution is very inefficient
+ * but should yield the most accurate results,
+ * therefore can be used to validate results
+ * from other algorithms.
+ */
+class RecursiveMinimalTrianglePathCalculator implements MinimalTrianglePathCalculator {
 
     @NotNull
     @Override
@@ -21,12 +31,7 @@ public class RecursiveMinimalTrianglePathCalculator implements MinimalTrianglePa
         Stack<TriangleNode> path = result.partialPath;
         path.push(top);
 
-        TriangleNode[] nodesInPath = new TriangleNode[path.size()];
-        for (int i = 0; !path.isEmpty(); ++i) {
-            nodesInPath[i] = path.pop();
-        }
-
-        return new TrianglePath(nodesInPath, result.value);
+        return new TrianglePath(buildPathFrom(path), result.value);
     }
 
     @NotNull
@@ -48,6 +53,15 @@ public class RecursiveMinimalTrianglePathCalculator implements MinimalTrianglePa
             rightValue.partialPath.push(currentNode.getRight());
             return rightValue;
         }
+    }
+
+    @NotNull
+    private TriangleNode[] buildPathFrom(Stack<TriangleNode> path) {
+        TriangleNode[] nodesInPath = new TriangleNode[path.size()];
+        for (int i = 0; !path.isEmpty(); ++i) {
+            nodesInPath[i] = path.pop();
+        }
+        return nodesInPath;
     }
 
     @RequiredArgsConstructor

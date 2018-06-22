@@ -2,35 +2,27 @@ package jezorko.github.minimaltrianglepath;
 
 import jezorko.github.minimaltrianglepath.domain.cli.CommandLineArguments;
 import jezorko.github.minimaltrianglepath.domain.input.InputResult;
-import jezorko.github.minimaltrianglepath.domain.input.InputStreamTriangleReader;
-import lombok.SneakyThrows;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.Optional;
+import jezorko.github.minimaltrianglepath.domain.input.TriangleInputReaderStaticFactory;
+import jezorko.github.minimaltrianglepath.domain.input.TriangleReader;
 
 import static java.lang.System.err;
-import static java.lang.System.in;
+import static java.util.Optional.of;
+import static jezorko.github.minimaltrianglepath.domain.input.TriangleInputReaderStaticFactory.standardInputStreamReader;
+import static jezorko.github.minimaltrianglepath.domain.minimalpath.MinimalPathCalculatorStaticFactory.defaultCalculator;
 
 public final class MinimalTrianglePathApplication {
 
     public static void main(String... args) {
         new CommandLineArguments(args).getInputFile()
-                                      .map(MinimalTrianglePathApplication::inputFileAsStream)
-                                      .or(() -> Optional.of(in))
-                                      .map(InputStreamTriangleReader::new)
-                                      .map(InputStreamTriangleReader::get)
+                                      .map(TriangleInputReaderStaticFactory::fileReader)
+                                      .or(() -> of(standardInputStreamReader()))
+                                      .map(TriangleReader::get)
                                       .orElseGet(InputResult::empty)
-                                      .doOnSuccess(triangle -> {
-                                          /* TODO: calculate path */
-                                      })
+                                      .doOnSuccess(triangle -> of(triangle).map(defaultCalculator()::calculateFrom)
+                                                                           // TODO: add path printing classes
+                                                                           .map(path -> "Minimal path is: " + path)
+                                                                           .ifPresent(System.out::println))
                                       .doOnError(err::print);
-    }
-
-    @SneakyThrows
-    private static InputStream inputFileAsStream(File file) {
-        return new FileInputStream(file);
     }
 
 }

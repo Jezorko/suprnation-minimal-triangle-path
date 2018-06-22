@@ -5,5 +5,5 @@ import java.util.function.Supplier;
 /**
  * Defines a {@link Triangle} reading class.
  */
-interface TriangleReader extends Supplier<InputResult<Triangle>> {
+public interface TriangleReader extends Supplier<InputResult<Triangle>> {
 }

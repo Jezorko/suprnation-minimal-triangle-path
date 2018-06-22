@@ -1,5 +1,6 @@
 package jezorko.github.minimaltrianglepath.domain.minimalpath
 
+import jezorko.github.minimaltrianglepath.domain.output.StandardOutputTrianglePathPrinter
 import org.spockframework.util.Pair
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -14,9 +15,12 @@ class MinimalTrianglePathCalculatorSpecITTest extends Specification {
 
     static MINIMUM_ROWS_AMOUNT = 2
     static MAXIMUM_ROWS_AMOUNT = 17
+    static REPETITIONS_AMOUNT = 100
 
     static ALGORITHMS_AND_ROW_AMOUNTS = {
         ALGORITHMS_TO_TEST.collect { (MINIMUM_ROWS_AMOUNT..MAXIMUM_ROWS_AMOUNT).collect({ rows -> Pair.of(rows, it) }) }
+                          .flatten()
+                          .collect { (0..REPETITIONS_AMOUNT).collect({ repetition -> it }) }
                           .flatten() as List<Pair<Long, MinimalTrianglePathCalculator>>
     }()
 
@@ -31,7 +35,12 @@ class MinimalTrianglePathCalculatorSpecITTest extends Specification {
           def algorithmResult = algorithm.calculateFrom triangle
 
         then:
-          algorithmResult == recursiveAlgorithmResult
+          if (algorithmResult != recursiveAlgorithmResult) {
+              assert algorithmResult.getValue() == recursiveAlgorithmResult.getValue()
+              println "Algorithms found two different paths:"
+              StandardOutputTrianglePathPrinter.print algorithmResult
+              StandardOutputTrianglePathPrinter.print recursiveAlgorithmResult
+          }
 
         where:
           algorithmAndRow << ALGORITHMS_AND_ROW_AMOUNTS

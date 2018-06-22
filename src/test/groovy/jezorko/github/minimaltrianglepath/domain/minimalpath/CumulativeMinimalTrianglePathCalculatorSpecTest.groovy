@@ -1,5 +1,6 @@
 package jezorko.github.minimaltrianglepath.domain.minimalpath
 
+
 import spock.lang.Specification
 import spock.lang.Subject
 import spock.lang.Timeout
@@ -47,7 +48,7 @@ class CumulativeMinimalTrianglePathCalculatorSpecTest extends Specification {
           result.nodes.size() == size as int
 
         where:
-          size << (1..15)
+          size << [10, 50, 100, 200, 300, 400, 500]
           triangle = randomTriangle size
     }
 

@@ -29,58 +29,84 @@ public class CumulativeMinimalTrianglePathCalculator implements MinimalTriangleP
                                                        .min(comparing(part -> part.valueSoFar))
                                                        .orElseThrow();
 
-        TriangleNode[] path = new TriangleNode[minimalPart.path.size()];
-        for (int i = path.length - 1; i >= 0; --i) {
-            path[i] = minimalPart.path.pop();
-        }
-
-        return new TrianglePath(path, minimalPart.valueSoFar);
+        return new TrianglePath(buildPathFrom(minimalPart), minimalPart.valueSoFar);
     }
 
     @NotNull
-    private CalculationFrame calculateFrom(CalculationFrame frame) {
-        if (frame.get(0).path.peek()
-                             .isLeaf()) {
-            return frame;
+    private CalculationFrame calculateFrom(CalculationFrame oldFrame) {
+        if (isCalculationFinished(oldFrame)) {
+            return oldFrame;
         }
 
-        // create new last element
-        CalculationPart currentLastElement = frame.get(frame.size() - 1);
-        CalculationPart newLastElement = new CalculationPart(currentLastElement.path, currentLastElement.valueSoFar);
-        newLastElement.path.add(currentLastElement.rightFromCurrent());
-        newLastElement.addToValue(currentLastElement.rightFromCurrent()
-                                                    .getValue());
+        final var newFrame = oldFrame.copy();
 
-        // create new first element
-        CalculationPart currentFirstElement = frame.get(frame.size() - 1);
-        CalculationPart newFirstElement = new CalculationPart(currentFirstElement.path, currentFirstElement.valueSoFar);
-        newFirstElement.path.add(currentFirstElement.rightFromCurrent());
-        newFirstElement.addToValue(currentFirstElement.rightFromCurrent()
-                                                      .getValue());
+        updateFirstElement(newFrame);
 
-        // update n-th element
-        for (int i = 1; i < frame.size() - 1; ++i) {
-            if (frame.valueOf(i) < frame.valueOf(i + 1)) { // left is smaller
-                final CalculationPart partToUpdate = frame.get(i);
-                partToUpdate.path.add(partToUpdate.rightFromCurrent());
-                partToUpdate.addToValue(partToUpdate.rightFromCurrent()
-                                                    .getValue());
-            }
-            else { // right is smaller
-                final CalculationPart partToUpdate = frame.get(i + 1);
-                final CalculationPart newPart = new CalculationPart(partToUpdate.path, partToUpdate.valueSoFar);
-                newPart.path.add(partToUpdate.leftFromCurrent());
-                newPart.addToValue(partToUpdate.leftFromCurrent()
-                                               .getValue());
-                frame.set(i, newPart);
-            }
+        for (int i = 1; i < oldFrame.size(); ++i) {
+            UpdateMiddleFramePart(oldFrame, newFrame, i);
         }
 
-        // append new elements
-        frame.set(0, newFirstElement);
-        frame.add(newLastElement);
+        appendNewLastElement(oldFrame, newFrame);
 
-        return calculateFrom(frame);
+        return calculateFrom(newFrame);
+    }
+
+    private boolean isCalculationFinished(CalculationFrame oldFrame) {
+        return oldFrame.stream()
+                       .map(p -> p.path)
+                       .map(Stack::peek)
+                       .anyMatch(TriangleNode::isLeaf);
+    }
+
+    private void updateFirstElement(CalculationFrame newFrame) {
+        final var firstElement = newFrame.get(0);
+        final var oldLeftFromFirst = firstElement.path.peek()
+                                                      .getLeft();
+        firstElement.path.add(oldLeftFromFirst);
+        firstElement.addToValue(oldLeftFromFirst.getValue());
+    }
+
+    private void UpdateMiddleFramePart(CalculationFrame oldFrame, CalculationFrame newFrame, int partIndex) {
+        final var smallerUpstreamValue = oldFrame.get(partIndex - 1).valueSoFar.compareTo(oldFrame.get(partIndex).valueSoFar) < 0 ?
+                                         oldFrame.get(partIndex - 1) : oldFrame.get(partIndex);
+
+        final var newValue = smallerUpstreamValue.copy();
+        newValue.path.add(oldFrame.get(partIndex - 1).path.peek()
+                                                          .getRight());
+        newValue.addToValue(oldFrame.get(partIndex - 1).path.peek()
+                                                            .getRight()
+                                                            .getValue());
+
+        newFrame.set(partIndex, newValue);
+    }
+
+    private void appendNewLastElement(CalculationFrame oldFrame, CalculationFrame newFrame) {
+        final var oldLastElement = oldFrame.get(oldFrame.size() - 1);
+        final var newLastElement = oldLastElement.copy();
+        newLastElement.path.add(oldLastElement.path.peek()
+                                                   .getRight());
+        newLastElement.addToValue(oldLastElement.path.peek()
+                                                     .getRight()
+                                                     .getValue());
+        newFrame.add(newLastElement);
+    }
+
+    @NotNull
+    private TriangleNode[] buildPathFrom(CalculationPart calculationPart) {
+        TriangleNode[] path = new TriangleNode[calculationPart.path.size()];
+        for (int i = path.length - 1; i >= 0; --i) {
+            path[i] = calculationPart.path.pop();
+        }
+        return path;
+    }
+
+    private static class CalculationFrame extends ArrayList<CalculationPart> {
+        private CalculationFrame copy() {
+            var result = new CalculationFrame();
+            stream().map(CalculationPart::copy)
+                    .forEach(result::add); // TODO: maybe collect instead of adding one-by-one?
+            return result;
+        }
     }
 
     @NoArgsConstructor
@@ -93,30 +119,13 @@ public class CumulativeMinimalTrianglePathCalculator implements MinimalTriangleP
             this.valueSoFar = valueSoFar;
         }
 
-        private long topValue() {
-            return path.lastElement()
-                       .getValue();
-        }
-
-        private TriangleNode leftFromCurrent() {
-            return path.lastElement()
-                       .getLeft();
-        }
-
-        private TriangleNode rightFromCurrent() {
-            return path.lastElement()
-                       .getRight();
-        }
-
         private void addToValue(long toAdd) {
             valueSoFar = valueSoFar.add(BigInteger.valueOf(toAdd));
         }
 
-    }
-
-    private static class CalculationFrame extends ArrayList<CalculationPart> {
-        long valueOf(int index) {
-            return get(index).topValue();
+        private CalculationPart copy() {
+            return new CalculationPart(path, valueSoFar);
         }
+
     }
 }

@@ -1,5 +1,6 @@
 package jezorko.github.minimaltrianglepath
 
+import jezorko.github.minimaltrianglepath.domain.input.InputStreamTriangleReader
 import jezorko.github.minimaltrianglepath.domain.input.Triangle
 import jezorko.github.minimaltrianglepath.domain.input.TriangleNode
 import jezorko.github.minimaltrianglepath.domain.minimalpath.TrianglePath
@@ -24,20 +25,23 @@ class TestUtils {
         return true
     }
 
-    static Triangle randomTriangle(int rowsCount, TriangleNode currentNode = null) {
-        if (currentNode == null) {
-            currentNode = randomNode()
-
-            randomTriangle(rowsCount - 1, currentNode)
-
-            return new Triangle(currentNode)
-        } else if (rowsCount != 0 as int) {
-            currentNode.left = randomNode()
-            currentNode.right = randomNode()
-            randomTriangle(rowsCount - 1, currentNode.left)
-            randomTriangle(rowsCount - 1, currentNode.right)
+    static Triangle randomTriangle(int rowsCount) {
+        StringBuilder builder = new StringBuilder()
+        for (int row = 1; row <= rowsCount; ++row) {
+            for (int element = 0; element < row - 1; ++element) {
+                builder.append(randomNumeric(3))
+                       .append(" ")
+            }
+            builder.append(randomNumeric(3))
+            if (row != rowsCount) {
+                builder.append("\n")
+            }
         }
-        null
+        def result = null
+        new InputStreamTriangleReader(inputAsStream(builder.toString())).get()
+                                                                        .doOnSuccess({ result = it })
+                                                                        .doOnError({ throw it })
+        return result
     }
 
     static randomNode() {
